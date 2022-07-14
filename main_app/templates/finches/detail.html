@@ -8,9 +8,9 @@
     <div class="card">
       <div class="card-content">
           <span class="card-title"><img src="{{ finch.photo }}" width="300px"></span>
-          <p><h3>Name: </h3>{{ finch.name }}</p>
-          <p><h3>Region: </h3>{{ finch.region }}</p>
-          <p><h3>Description: </h3>{{ finch.description }}</p>
+          <p><h5>Name: </h5>{{ finch.name }}</p>
+          <p><h5>Region: </h5>{{ finch.region }}</p>
+          <p><h5>Description: </h5>{{ finch.description }}</p>
       </div>
       <div class="card-action">
         <a href="{% url 'finches_update' finch.id %}">Edit</a>
@@ -26,13 +26,13 @@
   </form>
   <table class="striped">
     <thread>
-      <tr><th>Date</th><th>Meal</th></tr>
+      <tr><th>Date</th><th>Type</th></tr>
     </thread>
     <tbody>
       {% for sighting in finch.sighting_set.all %}
         <tr>
           <td>{{sighting.date}}</td>
-          <td>{{sighting.get_sighting_display}}</td>
+          <td>{{sighting.get_type_display}}</td>
         </tr>
       {% endfor %}
       </tbody>
@@ -48,7 +48,7 @@
     autoClose: true
   });
 
-  var selectEl = document.getElementById('id_sighting');
+  var selectEl = document.getElementById('id_type');
   M.FormSelect.init(selectEl);
 </script>
 {% endblock %}

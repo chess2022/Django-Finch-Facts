@@ -4,4 +4,4 @@ from .models import Sighting
 class SightingForm(ModelForm):
   class Meta:
     model = Sighting
-    fields = ['date', 'sighting']
+    fields = ['date', 'type']
