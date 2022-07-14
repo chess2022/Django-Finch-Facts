@@ -3,17 +3,52 @@
 
 <h1>Finch Details</h1>
 
-<div class="card">
-  <div class="card-content">
-      <span class="card-title"><img src="{{ finch.photo }}" width="300px"></span>
-      <p>Name: {{ finch.name }}</p>
-      <p>Region: {{ finch.region }}</p>
-      <p>Description: {{ finch.description }}</p>
+<div class="row">
+  <div class="col s6">
+    <div class="card">
+      <div class="card-content">
+          <span class="card-title"><img src="{{ finch.photo }}" width="300px"></span>
+          <p><h3>Name: </h3>{{ finch.name }}</p>
+          <p><h3>Region: </h3>{{ finch.region }}</p>
+          <p><h3>Description: </h3>{{ finch.description }}</p>
+      </div>
+      <div class="card-action">
+        <a href="{% url 'finches_update' finch.id %}">Edit</a>
+        <a href="{% url 'finches_delete' finch.id %}">Delete</a>    
+      </div>
+    </div>
   </div>
-  <div class="card-action">
-    <a href="{% url 'finches_update' finch.id %}">Edit</a>
-    <a href="{% url 'finches_delete' finch.id %}">Delete</a>    
+<div class="col s6">
+  <form action="{% url 'add_sighting' finch.id %}" method="post">
+    {% csrf_token %}
+    {{ sighting_form.as_p }}
+    <input type="submit" class="btn" value="Add Sighting">
+  </form>
+  <table class="striped">
+    <thread>
+      <tr><th>Date</th><th>Meal</th></tr>
+    </thread>
+    <tbody>
+      {% for sighting in finch.sighting_set.all %}
+        <tr>
+          <td>{{sighting.date}}</td>
+          <td>{{sighting.get_sighting_display}}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
   </div>
 </div>
+<script>
+  var dateEl = document.getElementById('id_date');
+  M.Datepicker.init(dateEl, {
+    format: 'yyyy-mm-dd',
+    defaultDate: new Date(),
+    setDefaultDate: true,
+    autoClose: true
+  });
 
+  var selectEl = document.getElementById('id_sighting');
+  M.FormSelect.init(selectEl);
+</script>
 {% endblock %}

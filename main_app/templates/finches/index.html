@@ -8,9 +8,9 @@
     <a href="{% url 'detail' finch.id %}">
     <div class="card-content">
       <span class="card-title"><img src="{{ finch.photo }}" width="300px"></span>
-      <p>Name: {{ finch.name }}</p>
-      <p>Region: {{ finch.region }}</p>
-      <p>Description: {{ finch.description }}</p>
+      <h4>Name: </h4> <p>{{ finch.name }}</p>
+      <h4>Region: </h4> <p>{{ finch.region }}</p>
+      <h4>Description: </h4> <p>{{ finch.description }}</p>
     </div>
     </a>
   </div>
