@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Finch, Region, Photo
+from .models import Finch, Image, Region, Image
 from main_app.forms import SightingForm, signUpForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
@@ -86,15 +86,17 @@ def add_sighting(request, finch_id):
         new_sighting.save()
     return redirect('detail', finch_id=finch_id)
 
-def add_photo(request, finch_id):
-    photo_file = request.FILES.get('photo-file', None)
-    if photo_file:
+@login_required
+def add_image(request, finch_id):
+    image_file = request.FILES.get('image-file', None)
+    if image_file:
         s3 = boto3.client('s3')
-        key = uuid.uuid4().hex[:6] + photo_file.name[photo_file.name.rfind('.'):]
+        key = uuid.uuid4().hex[:6] + image_file.name[image_file.name.rfind('.'):]
         try:
-            s3.upload_fileobj(photo_file, BUCKET, key)
+            s3.upload_fileobj(image_file, BUCKET, key)
             url = f"{S3_BASE_URL}{BUCKET}/{key}"
-            photo = Photo(url=url, finch_id=finch_id)
+            image = Image(url=url, finch_id=finch_id)
+            image.save()
         except:
             print('An error occurred')
         return redirect('detail', finch_id=finch_id)

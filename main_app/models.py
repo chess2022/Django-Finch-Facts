@@ -46,9 +46,9 @@ class Sighting(models.Model):
     class Meta:
         ordering = ['-date']
 
-class Photo(models.Model):
+class Image(models.Model):
     url = models.CharField(max_length=200)
-    sighting = models.ForeignKey(Sighting, on_delete=models.CASCADE)
+    finch = models.ForeignKey(Finch, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Photo for sighting on {self.sighting.date}: {self.sighting_id} @{self.url}"
+        return f"Photo for finch_id: {self.finch_id} @{self.url}"
