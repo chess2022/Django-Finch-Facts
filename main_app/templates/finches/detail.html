@@ -25,7 +25,8 @@
     {{ sighting_form.as_p }}
     <input type="submit" class="btn" value="Add Sighting">
   </form>
-  {% for photo in finch.photo_set.all %}
+  <h5>Sighting Photos</h5>
+  {% for photo in sighting.photo_set.all %}
     <img class="responsive-img card-panel" src="{{photo.url}}">
   {% empty %}
       <div class="card-panel teal-text center-align">No Photos Uploaded</div>
@@ -66,13 +67,13 @@
 
 <div class="row">
 	<div class="col s6">
-		<h3>{{ finch.name }} Region</h3>
-    {% if finch.regions.count %}
-      {% for region in finch.regions.all %}
+		<h5>{{ finch.name }}, where you at?</h5>
+    {% if finch.region.count %}
+      {% for region in finch.region.all %}
         <div class="card">
           <div class="card-content">
             <span class="card-title">
-              {{ region.name }}
+              {{ region.region }}
               <div class="card-action">
                 <form action="{% url 'delete_region' finch.id region.id %}" method="post">
                 {% csrf_token %}
@@ -84,17 +85,17 @@
         </div>
       {% endfor %}
     {% else %}
-      <h5>No Region(s) Added</h5>
+      <p>No Region(s) Added</p>
     {% endif %}
   </div>
 <div class="col s6">
-  <h3>Available Regions</h3>
-  {% if regions.count %}
-    {% for region in regions.all %}
+  <h5>Available Regions</h5>
+  {% if region.count %}
+    {% for region in region.all %}
       <div class="card">
         <div class="card-content">
           <span class="card-title">
-            {{ region.name }}
+            {{ region.region }}
           </span>
         </div>
         <div class="card-action">
@@ -105,6 +106,9 @@
         </div>
       </div>
     {% endfor %}
+  {% else %}
+      <h6>{{finch.name}} seems to be everywhere!</h6>
+  {% endif %}
 </div>
 </div>
 

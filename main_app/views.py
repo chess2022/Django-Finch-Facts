@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import Finch, Region, Photo
-from main_app.forms import SightingForm
+from main_app.forms import SightingForm, signUpForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView, DetailView
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
+from main_app.forms import signUpForm
 
 import uuid
 import boto3
@@ -27,7 +28,7 @@ class FinchCreate(LoginRequiredMixin, CreateView):
 
 class FinchUpdate(LoginRequiredMixin, UpdateView):
     model = Finch
-    fields = ['photo', 'region', 'description']
+    fields = ['photo', 'description']
 
 class FinchDelete(LoginRequiredMixin, DeleteView):
     model = Finch
@@ -48,14 +49,17 @@ def about(request):
 def signup(request):
     error_message = ''
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = signUpForm(request.POST)
         if form.is_valid():
-            user = form.save()
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            user = authenticate(username=username, password=raw_password)
             login(request, user)
             return redirect('index')
         else:
             error_message = 'Invalid sign-up. Please try again'
-    form = UserCreationForm()
+    form = signUpForm()
     context = {'form': form, 'error_message': error_message}
     return render(request, 'registration/signup.html', context)
 
@@ -97,12 +101,12 @@ def add_photo(request, finch_id):
 
 @login_required
 def assoc_region(request, finch_id, region_id):
-    Finch.objects.get(id=finch_id).region.add(region_id)
+    Finch.objects.get(id=finch_id).regions.add(region_id)
     return redirect('detail', finch_id=finch_id)
 
 @login_required
 def delete_region(request, finch_id, region_id):
-    Finch.objects.get(id=finch_id).region.remove(region_id)
+    Finch.objects.get(id=finch_id).regions.remove(region_id)
     return redirect('detail', finch_id=finch_id)
 
 class RegionList(LoginRequiredMixin, ListView):
@@ -121,5 +125,5 @@ class RegionUpdate(LoginRequiredMixin, UpdateView):
 
 class RegionDelete(LoginRequiredMixin, DeleteView):
     model = Region
-    success_url = '/region/'
+    success_url = '/regions/'
 

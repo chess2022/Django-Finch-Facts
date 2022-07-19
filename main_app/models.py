@@ -48,7 +48,7 @@ class Sighting(models.Model):
 
 class Photo(models.Model):
     url = models.CharField(max_length=200)
-    cat = models.ForeignKey(Finch, on_delete=models.CASCADE)
+    sighting = models.ForeignKey(Sighting, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Photo for finch_id: {self.finch_id} @{self.url}"
+        return f"Photo for sighting on {self.sighting.date}: {self.sighting_id} @{self.url}"
