@@ -1,18 +1,30 @@
 from django.db import models
 from django.urls import reverse
 from datetime import date
+from django.contrib.auth.models import User
 
 # Create your models here.
 SIGHTINGS = (
     ('S', 'Physically Seen'),
     ('H', 'Heard Song')
 )
+class Region(models.Model):
+  region = models.CharField(max_length=50)
+
+  def __str__(self):
+    return self.region
+
+  def get_absolute_url(self):
+    return reverse('region_detail', kwargs={'pk': self.id})
 
 class Finch(models.Model):
     photo = models.CharField(max_length=200)
     name = models.CharField(max_length=100)
     region = models.CharField(max_length=100)
     description = models.TextField(max_length=1000)
+
+    region = models.ManyToManyField(Region)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
@@ -34,3 +46,10 @@ class Sighting(models.Model):
 
     class Meta:
         ordering = ['-date']
+
+class Photo(models.Model):
+    url = models.CharField(max_length=200)
+    cat = models.ForeignKey(Finch, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Photo for finch_id: {self.finch_id} @{self.url}"
